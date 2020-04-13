@@ -4,11 +4,16 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
 		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="mobile-web-app-capable" content="yes" />				
+		
 		<style type="text/css" title="Default">
+			body, div, h1, h2, h3, span, p {
+				font-family: Verdana,Arial,Helvetica,sans-serif;
+				color: #000000; 
+			}
 			/* fullscreen */
 			html {
 				height:100%;
@@ -17,45 +22,754 @@
 				height:100%;
 				margin: 0px;
 				overflow:hidden; /* disable scrollbars */
-				-webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* remove highlight on tab for iOS/Android */
 			}
-			/* fix for scroll bars on webkit & >=Mac OS X Lion */ 
+			body {
+			  font-size: 10pt;
+			  background : #ffffff; 
+			}
+			.warning { 
+				font-weight: bold;
+			} 
+			/* fix for scroll bars on webkit & Mac OS X Lion */ 
 			::-webkit-scrollbar {
 				background-color: rgba(0,0,0,0.5);
 				width: 0.75em;
 			}
 			::-webkit-scrollbar-thumb {
-    			background-color:  rgba(255,255,255,0.5);
+				background-color:  rgba(255,255,255,0.5);
 			}
 		</style>	
 	</head>
 	<body>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - -->
 		<script type="text/javascript" src="pano2vr_player.js">
 		</script>
 		<script type="text/javascript" src="skin.js">
 		</script>
-		<script src="webvr/three.min.js"></script>
-		<script src="webvr/webvr-polyfill.min.js"></script>
-		<div id="container" style="width:100%;height:100%;overflow:hidden;">
-		<br>Loading...<br><br>
-		</div>
+		<script type="text/javascript" src="pano2vrgyro.js">
+		</script>
+		<table border="0" cellspacing="0" cellpadding="0" style="width:100%;height:100%;" id="container_both" ondblclick="containerFullscreen();">
+			<tr>
+				<td style="width:50%;height:100%;"><div id="container_left"	 style="width:100%;height:100%;">
+				This content requires HTML5/CSS3 or WebGL.</div></td>
+				<td style="width:50%;height:100%;"><div id="container_right" style="width:100%;height:100%;">
+				This content requires HTML5/CSS3 or WebGL.</div></td>
+			</tr>
+		</table>
 		<script type="text/javascript">
 	
+		// check for CSS3 3D transformations and WebGL
+		if (ggHasHtml5Css3D() || ggHasWebGL()) {
 			// create the panorama player with the container
-			pano=new pano2vrPlayer("container");
+			pano_left=new pano2vrPlayer("container_left");
+			pano_right=new pano2vrPlayer("container_right");
 			// add the skin object
-			skin=new pano2vrSkin(pano);
+			skin_left=new pano2vrSkin(pano_left);
+			skin_right=new pano2vrSkin(pano_right);
 			// load the configuration
+		panorama='<?xml version="1.0" encoding="UTF-8"?>';
+			panorama+='<tour appversion="6.1.2" apprev="17873" start="node1">';
+			panorama+='  <panorama id="node1">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node1/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node1" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-4.6/-5.5/70.0" skinid="ht_node" url="{node2}" tilt="-11.36" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-4.91" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node2">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node2/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node2" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="166.6/-9.8/70.0" skinid="ht_node" url="{node1}" tilt="-10.21" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-197.03" description=""/>';
+			panorama+='      <hotspot target="5.5/-6.6/70.0" skinid="ht_node" url="{node7}" tilt="-2.05" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-75.92" description=""/>';
+			panorama+='      <hotspot target="-172.3/-1.7/70.0" skinid="ht_node" url="{node3}" tilt="-0.45" title="EscazuUrbano-Win64-Shipping" id="Point03" pan="-25.45" description=""/>';
+			panorama+='      <hotspot target="-175.0/-0.8/70.0" skinid="ht_node" url="{node4}" tilt="0" title="EscazuUrbano-Win64-Shipping" id="Point04" pan="-293.35" description=""/>';
+			panorama+='      <hotspot target="" skinid="ht_node" url="{node12}" tilt="0.74" title="EscazuUrbano-Win64-Shipping" id="Point05" pan="-350.88" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node3">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node3/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node3" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="154.9/-4.2/70.0" skinid="ht_node" url="{node2}" tilt="0.42" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-353.77" description=""/>';
+			panorama+='      <hotspot target="" skinid="ht_node" url="{node12}" tilt="-1.08" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-60.24" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node4">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node4/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node4" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-125.2/-0.2/70.0" skinid="ht_node" url="{node2}" tilt="-1.01" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-21.49" description=""/>';
+			panorama+='      <hotspot target="176.0/-4.1/70.0" skinid="ht_node" url="{node5}" tilt="-0.74" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-283.44" description=""/>';
+			panorama+='      <hotspot target="" skinid="ht_node" url="{node12}" tilt="-1.42" title="EscazuUrbano-Win64-Shipping" id="Point03" pan="-217.97" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node5">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node5/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node5" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-93.3/0.3/70.0" skinid="ht_node" url="{node4}" tilt="1.66" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-4.8" description=""/>';
+			panorama+='      <hotspot target="0.0/0.0/70.0" skinid="ht_node" url="{node6}" tilt="-1.48" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-221.34" description=""/>';
+			panorama+='      <hotspot target="" skinid="ht_node" url="{node12}" tilt="-1.21" title="EscazuUrbano-Win64-Shipping" id="Point03" pan="-77.85" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node6">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node6/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node6" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-63.0/1.4/70.0" skinid="ht_node" url="{node5}" tilt="0.17" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-194.59" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node7">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node7/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node7" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="79.0/-2.7/70.0" skinid="ht_node" url="{node2}" tilt="-2.36" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-149.09" description=""/>';
+			panorama+='      <hotspot target="173.8/-9.0/70.0" skinid="ht_node" url="{node8}" tilt="-21.05" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-323.65" description=""/>';
+			panorama+='      <hotspot target="179.9/-13.7/70.0" skinid="ht_node" url="{node9}" tilt="-19.16" title="EscazuUrbano-Win64-Shipping" id="Point03" pan="-24.34" description=""/>';
+			panorama+='      <hotspot target="178.2/-25.3/70.0" skinid="ht_node" url="{node11}" tilt="-18.31" title="EscazuUrbano-Win64-Shipping" id="Point04" pan="-73.27" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node8">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node8/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node8" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-152.5/-9.8/70.0" skinid="ht_node" url="{node7}" tilt="-10.64" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-348.41" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node9">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node9/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node9" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="170.0/-7.4/70.0" skinid="ht_node" url="{node7}" tilt="-5.34" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-11.86" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node10">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node10/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node10" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="171.9/-3.8/70.0" skinid="ht_node" url="{node11}" tilt="-6.8" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-340.1" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node11">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node11/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node11" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="115.2/-8.1/70.0" skinid="ht_node" url="{node7}" tilt="11.41" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-347.65" description=""/>';
+			panorama+='      <hotspot target="-173.8/-1.4/70.0" skinid="ht_node" url="{node10}" tilt="-2.93" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-23.38" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node12">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node12/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node12" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="4.6/0.6/70.0" skinid="ht_node" url="{node2}" tilt="-11.89" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-159.75" description=""/>';
+			panorama+='      <hotspot target="10.0/-10.5/70.0" skinid="ht_node" url="{node15}" tilt="14.54" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-75.81" description=""/>';
+			panorama+='      <hotspot target="133.4/-29.8/70.0" skinid="ht_node" url="{node13}" tilt="-22.99" title="EscazuUrbano-Win64-Shipping" id="Point03" pan="-296.78" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node13">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node13/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node13" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="14.7/-11.1/70.0" skinid="ht_node" url="{node15}" tilt="8.68" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-41.97" description=""/>';
+			panorama+='      <hotspot target="177.6/-9.0/70.0" skinid="ht_node" url="{node14}" tilt="-3.82" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-351.37" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node14">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node14/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node14" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="171.9/-12.3/70.0" skinid="ht_node" url="{node13}" tilt="-7.21" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-2.2" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node15">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node15/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node15" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="145.4/-15.7/70.0" skinid="ht_node" url="{node13}" tilt="-23.4" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-0.15" description=""/>';
+			panorama+='      <hotspot target="86.5/-2.4/70.0" skinid="ht_node" url="{node16}" tilt="7.71" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-337.42" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node16">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node16/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node16" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="2.9/-9.0/70.0" skinid="ht_node" url="{node15}" tilt="-16.41" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-103.19" description=""/>';
+			panorama+='      <hotspot target="47.3/-11.2/70.0" skinid="ht_node" url="{node17}" tilt="-10.31" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-262.3" description=""/>';
+			panorama+='      <hotspot target="8.0/-11.2/70.0" skinid="ht_node" url="{node18}" tilt="-12.92" title="EscazuUrbano-Win64-Shipping" id="Point03" pan="-14.18" description=""/>';
+			panorama+='      <hotspot target="38.8/-12.5/70.0" skinid="ht_node" url="{node19}" tilt="-12.73" title="EscazuUrbano-Win64-Shipping" id="Point04" pan="-220.72" description=""/>';
+			panorama+='      <hotspot target="120.8/-19.5/70.0" skinid="ht_node" url="{node20}" tilt="-16.94" title="EscazuUrbano-Win64-Shipping" id="Point05" pan="-170.86" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node17">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node17/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node17" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-108.6/-9.4/70.0" skinid="ht_node" url="{node16}" tilt="-11.87" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-135.2" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node18">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node18/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node18" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-173.0/-5.6/70.0" skinid="ht_node" url="{node16}" tilt="-7.14" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-160.38" description=""/>';
+			panorama+='      <hotspot target="-6.4/-28.9/70.0" skinid="ht_node" url="{node21}" tilt="-31.67" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-94.85" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node19">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node19/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node19" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-18.6/-3.3/70.0" skinid="ht_node" url="{node16}" tilt="-4.63" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-136.06" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node20">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="2048" overlap="1" levelingpitch="0" width="2048" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node20/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="2048" width="2048" predecode="0"/>';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node20" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="17.1/6.4/70.0" skinid="ht_node" url="{node16}" tilt="-7.76" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-41.17" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node21">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node21/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node21" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="" skinid="ht_node" url="{node18}" tilt="-27.76" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-205.13" description=""/>';
+			panorama+='      <hotspot target="64.4/-15.4/70.0" skinid="ht_node" url="{node22}" tilt="-12.1" title="EscazuUrbano-Win64-Shipping" id="Point02" pan="-298.72" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <panorama id="node22">';
+			panorama+='    <input levelbiashidpi="1.000" stereo="1" height="1024" overlap="1" levelingpitch="0" width="1024" levelingroll="0" levelbias="0.400" leveltileurl="tiles/node22/cf_%c/l_%l/c_%x/tile_%y.jpg" fliplr="0" leveltilesize="510">';
+			panorama+='      <level preload="0" height="1024" width="1024" predecode="0"/>';
+			panorama+='      <level preload="0" height="512" width="512" predecode="0"/>';
+			panorama+='      <level preload="1" height="256" width="256" predecode="1"/>';
+			panorama+='      <preview color="0x808080" strip="1"/>';
+			panorama+='    </input>';
+			panorama+='    <view pannorth="0" fovmode="0">';
+			panorama+='      <start projection="4" tilt="0" fov="70" pan="0"/>';
+			panorama+='      <flyin projection="9" tilt="-90" fov="170" pan="0"/>';
+			panorama+='      <min tilt="-90" fovpixel="2" pan="0"/>';
+			panorama+='      <max fovstereographic="270" scaletofit="1" fovfisheye="360" tilt="90" fov="120" pan="360"/>';
+			panorama+='    </view>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="Escazu_Urbano_Online StereoVR" copyright="" source="NVIDIA" nodeid="node22" info="" title="EscazuUrbano-Win64-Shipping" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='    <hotspots height="20" wordwrap="1" width="180">';
+			panorama+='      <label enabled="1" textalpha="1" height="20" border="1" bordercolor="0x000000" backgroundalpha="1" background="1" wordwrap="1" width="180" textcolor="0x000000" borderalpha="1" borderradius="1" backgroundcolor="0xffffff"/>';
+			panorama+='      <polystyle bordercolor="0x0000ff" backgroundalpha="0.25098" mode="0" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>';
+			panorama+='      <hotspot target="-123.3/-8.1/70.0" skinid="ht_node" url="{node21}" tilt="-16.5" title="EscazuUrbano-Win64-Shipping" id="Point01" pan="-96.94" description=""/>';
+			panorama+='    </hotspots>';
+			panorama+='    <media/>';
+			panorama+='    <transition enabled="1" zoomfov="20" softedge="0" zoomoutpause="1" zoomout="0" blendtime="1" blendcolor="0x000000" zoomspeed="2" type="crossdissolve" zoomin="0"/>';
+			panorama+='    <animation syncanimationwithvideo="0" animsequence="Animation01" useinautorotation="0"/>';
+			panorama+='    <control simulatemass="1" dblclickfullscreen="0" rubberband="0" lockedkeyboard="0" lockedwheel="0" contextfullscreen="1" lockedmouse="0" lockedkeyboardzoom="0" invertwheel="0" sensitivity="8" invertcontrol="1" contextprojections="0" speedwheel="1" hideabout="0"/>';
+			panorama+='  </panorama>';
+			panorama+='  <masternode>';
+			panorama+='    <userdata datetime="" comment="" latitude="" tags="" copyright="" source="" nodeid="master" info="" title="" customnodeid="" author="" longitude="" description=""/>';
+			panorama+='  </masternode>';
+			panorama+='</tour>';
+			panorama+='';
+		pano_left.readConfigString(panorama);
+		var nodeIds=pano_left.getNodeIds();
+		pano_right.disableSoundLoading(); // only play sounds from the left pano.
+		pano_right.setVolume("_main",0.0);
 		
-			window.addEventListener("load", function() {
-				pano.readConfigUrlAsync("pano.xml");
-			});
+		pano_right.readConfigString(panorama);
+		// add gyroscope controller
+		gyro=new pano2vrGyro([pano_left,pano_right],"container_left");
+		gyro.setUseRoll(true); // Use roll of gyroscope if set
+		gyro.setAdaptiveVOffset(true);
+		gyro.setUseMoveTo(false); // Faster responce
+		// synchronize both panoramas
+		var lastPan,lastTilt,lastRoll,lastFov,lastLeft,lastRigth;
+		lastLeft=pano_left.getCurrentNode();
+		lastRight=pano_right.getCurrentNode();
+		function syncPanos() {
+			try {
+				if(lastRight!==pano_right.getCurrentNode()){
+					pano_left.openNext("{" + pano_right.getCurrentNode() + "}", "$cur");
+				}
+				else if(lastLeft!==pano_left.getCurrentNode()){
+					pano_right.openNext("{" + pano_left.getCurrentNode() + "}", "$cur");
+				}
+				lastLeft=pano_left.getCurrentNode();
+				lastRight=pano_right.getCurrentNode();
+				var panoSrc=pano_left;
+				var panoDst=pano_right;
+				// Interaction works best on the left side
+				// If source has not changed but dest has changed then switched source and dest
+				if ((lastPan==pano_left.getPan()) &&
+					 (lastTilt==pano_left.getTilt()) &&
+					 (lastRoll==pano_left.getRoll()) &&
+					 (lastFov==pano_left.getFov()) &&
+					 ( (lastPan!=pano_right.getPan()) ||
+					   (lastTilt!=pano_right.getTilt()) ||
+					 (lastRoll!=pano_right.getRoll()) ||
+					   (lastFov!=pano_right.getFov()))) {
+						  panoSrc=pano_right;
+						  panoDst=pano_left;
+						}
+				lastPan=panoSrc.getPan();
+				lastTilt=panoSrc.getTilt();
+				lastRoll=panoSrc.getRoll();
+				lastFov=panoSrc.getFov();
+				panoDst.setPanTiltFov(lastPan,lastTilt,lastFov);
+				panoDst.setRoll(lastRoll);
+			} catch(e) {}
+		}
+		setInterval (syncPanos, 10 );
+		syncPanos();
+		var lastNode;
+		var hotspotArray=[];
+		var cHotspot;
+		var hotspotEnterTime;
+		function stareNavigation() {
+			if (pano_left) {
+				if (pano_left.getCurrentNode()!=lastNode) {
+					lastNode=pano_left.getCurrentNode();
+					hotspotArray=[];
+					var ids=pano_left.getPointHotspotIds();
+					for(var i=0;i<ids.length;i++) {
+						var id=ids[i];
+						var hotspot=pano_left.getHotspot(id);
+						hotspotArray.push(hotspot);
+					} 
+				}
+				var cPan=pano_left.getPan();
+				var cTilt=pano_left.getTilt();
+				var found=false;
+				var dist=5;
+				var timeout=2000;
+				for (var i = 0; i < hotspotArray.length; i++) {
+					var hotspot = hotspotArray[i];
+					var pdif=(hotspot.pan-cPan);
+					while(pdif<-180) pdif+=360.0;
+					while(pdif>180) pdif-=360.0;
+					if ((Math.abs(pdif)<(dist*Math.cos(cTilt * Math.PI/180.0))) && 
+						(Math.abs(hotspot.tilt-cTilt)<dist)) {
+						if (hotspot!=cHotspot) {
+							cHotspot=hotspot;
+							hotspotEnterTime=Date.now();
+						}
+						found=true;
+						break;
+					}
+				}
+				if (found) {
+					if ((hotspotEnterTime+timeout)<Date.now()) {
+						cHotspot.div.onclick();
+						gyro.reset();
+						setTimeout(function(){ gyro.reset(); },1);
+						cHotspot=null;
+					}
+				} else {
+					cHotspot=null;
+				}
+			}
+		}
+		setInterval (stareNavigation, 100);
+		function containerFullscreen() 
+		{
+			var e=document.getElementById('container_both');
+			// go full-screen
+			if (e.requestFullscreen) {
+				e.requestFullscreen();
+			} else if (e.webkitRequestFullscreen) {
+				e.webkitRequestFullscreen();
+			} else if (e.mozRequestFullScreen) {
+				e.mozRequestFullScreen();
+			} else if (e.msRequestFullscreen) {
+				e.msRequestFullscreen();
+			}		
+		}
+		var containerIsFullscreen=false;
+		function containerToggleFullscreen() {
+			containerIsFullscreen=!containerIsFullscreen;
+			if (containerIsFullscreen) {
+				containerFullscreen();
+			} else {
+				pano_left.exitFullscreen();
+			}
+		}
+		// link skin buttons the container fullscreen
+		pano_left.enterFullscreen = containerFullscreen;
+		pano_right.enterFullscreen = containerFullscreen;
+		pano_left.toggleFullscreen = containerToggleFullscreen;
+		pano_right.toggleFullscreen = containerToggleFullscreen;
+	} // HTML5 CSS3D/WebGL check
 		</script>
 		<noscript>
 			<p><b>Please enable Javascript!</b></p>
 		</noscript>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - --> 
 		<!-- Hack needed to hide the url bar on iOS 9, iPhone 5s --> 
 		<div style="width:1px;height:1px;"></div>
 	</body>
