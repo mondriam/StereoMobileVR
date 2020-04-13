@@ -1,7 +1,7 @@
 // Garden Gnome Software - Skin
 // Pano2VR 6.1.2/17873
-// Filename: cardboard.ggsk
-// Generated 2020-04-12T21:57:47
+// Filename: cardboard-Phil.ggsk
+// Generated 2020-04-12T22:06:58
 
 function pano2vrSkin(player,base) {
 	player.addVariable('ht_ani', 2, false);
@@ -201,6 +201,71 @@ function pano2vrSkin(player,base) {
 		me._ht_node_timer.ggUpdatePosition=function (useTransition) {
 		}
 		me.divSkin.appendChild(me._ht_node_timer);
+		el=me._button_1=document.createElement('div');
+		els=me._button_1__img=document.createElement('img');
+		els.className='ggskin ggskin_button_1';
+		hs=basePath + 'images/button_1.png';
+		els.setAttribute('src',hs);
+		els.ggNormalSrc=hs;
+		els.setAttribute('style','position: absolute;top: 0px;left: 0px;width: 100%;height: 100%;-webkit-user-drag:none;pointer-events:none;;');
+		els.className='ggskin ggskin_button';
+		els['ondragstart']=function() { return false; };
+		player.checkLoaded.push(els);
+		el.appendChild(els);
+		el.ggSubElement = els;
+		el.ggId="Button 1";
+		el.ggDx=0;
+		el.ggDy=0;
+		el.ggParameter={ rx:0,ry:0,a:0,sx:1,sy:1 };
+		el.ggVisible=true;
+		el.className="ggskin ggskin_button ";
+		el.ggType='button';
+		hs ='';
+		hs+='cursor : pointer;';
+		hs+='height : 134px;';
+		hs+='left : -10000px;';
+		hs+='position : absolute;';
+		hs+='top : -10000px;';
+		hs+='visibility : inherit;';
+		hs+='width : 135px;';
+		hs+='pointer-events:auto;';
+		el.setAttribute('style',hs);
+		el.style[domTransform + 'Origin']='50% 50%';
+		me._button_1.ggIsActive=function() {
+			return false;
+		}
+		el.ggElementNodeId=function() {
+			return player.getCurrentNode();
+		}
+		me._button_1.onmouseout=function (e) {
+			me.elementMouseDown['button_1']=false;
+		}
+		me._button_1.onmousedown=function (e) {
+			me.elementMouseDown['button_1']=true;
+		}
+		me._button_1.onmouseup=function (e) {
+			me.elementMouseDown['button_1']=false;
+		}
+		me._button_1.ontouchend=function (e) {
+			me.elementMouseDown['button_1']=false;
+		}
+		me._button_1.ggUpdatePosition=function (useTransition) {
+			if (useTransition==='undefined') {
+				useTransition = false;
+			}
+			if (!useTransition) {
+				this.style[domTransition]='none';
+			}
+			if (this.parentNode) {
+				var pw=this.parentNode.clientWidth;
+				var w=this.offsetWidth;
+					this.style.left=(this.ggDx + pw/2 - w/2) + 'px';
+				var ph=this.parentNode.clientHeight;
+				var h=this.offsetHeight;
+					this.style.top=(this.ggDy + ph/2 - h/2) + 'px';
+			}
+		}
+		me.divSkin.appendChild(me._button_1);
 		player.addListener('sizechanged', function() {
 			me.updateSize(me.divSkin);
 		});
@@ -244,6 +309,24 @@ function pano2vrSkin(player,base) {
 				player.setVariableValue('ht_ani', true);
 			} else {
 				player.setVariableValue('ht_ani', false);
+			}
+		}
+		if (me.elementMouseDown['button_1']) {
+			player.enterFullscreen();
+			me._button_1.style['display']='none';
+			var p = me._button_1.parentElement;
+			while (p != null && p!==this.divSkin) {
+				if (p.ggType && p.ggType == 'cloner') {
+					if (p.ggAutoPosition) {
+						p.ggAutoPosition(false);
+					}
+				}
+				if (p.ggType && p.ggType == 'scrollarea') {
+					if (p.ggUpdatePosition) {
+						p.ggUpdatePosition();
+					}
+				}
+				p = p.parentElement;
 			}
 		}
 	};
